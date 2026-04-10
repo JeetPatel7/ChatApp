@@ -34,12 +34,16 @@ export default function ChatArea({ roomId, rooms }) {
   }, [roomId])
 
   async function handleSend() {
-    if (!input.trim() || sending) return
-    setSending(true)
-    await sendMessage(input, replyTo?.id)
+    if (!input.trim()) return
+    const textToSend = input
+    const replyId = replyTo?.id
+    
+    // Instantly clear UI for snappy feel
     setInput('')
     setReplyTo(null)
-    setSending(false)
+    
+    // Background send without blocking UI
+    sendMessage(textToSend, replyId)
   }
 
   function handleKeyDown(e) {

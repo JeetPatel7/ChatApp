@@ -76,7 +76,14 @@ export function useMessages(roomId) {
           `)
           .eq('id', payload.new.id)
           .single()
-        if (data) setMessages(prev => [...prev, data])
+        if (data) {
+          setMessages(prev => {
+            // Prevent duplicates / replace optimistic message with real db message
+            const exists = prev.find(m => m.id === payload.new.id)
+            if (exists) return prev.map(m => m.id === payload.new.id ? data : m)
+            return [...prev, data]
+          })
+        }
       } catch (err) {
         console.error('Realtime message fetch error:', err)
       }
@@ -163,19 +170,49 @@ export function useMessages(roomId) {
   const sendMessage = useCallback(async (content, replyToId = null) => {
     if (!content.trim() || !roomId || !user) return
     setTyping(false)
+
+    // 1. Optimistic Update (makes it feel instant)
+    const tempId = crypto.randomUUID()
+    const optimisticMsg = {
+      id: tempId,
+      room_id: roomId,
+      sender_id: user.id,
+      content: content.trim(),
+      reply_to_id: replyToId || null,
+      created_at: new Date().toISOString(),
+      sender: {
+        id: user.id,
+        display_name: profile?.display_name || user.email,
+        avatar_color: profile?.avatar_color || '#185FA5',
+        email: user.email,
+      },
+      reactions: [],
+      reply_to: null, // Basic optimistic, real reply_to comes via realtime sync
+    }
+    setMessages(prev => [...prev, optimisticMsg])
+
+    // 2. Background Insert
     try {
       const { error } = await supabase.from('messages').insert({
+        id: tempId, // Pass the same ID so the realtime event replaces this exact one
         room_id: roomId,
         sender_id: user.id,
         content: content.trim(),
         reply_to_id: replyToId || null,
       })
-      return { error }
+      if (error) {
+        console.error('Send message error:', error)
+        // Rollback
+        setMessages(prev => prev.filter(m => m.id !== tempId))
+        return { error }
+      }
+      return { error: null }
     } catch (err) {
-      console.error('Send message error:', err)
+      console.error('Send message exception:', err)
+      setMessages(prev => prev.filter(m => m.id !== tempId))
       return { error: err }
     }
-  }, [roomId, user, setTyping])
+  }, [roomId, user, profile, setTyping])
 
   // Toggle reaction
   const toggleReaction = useCallback(async (messageId, emoji) => {
