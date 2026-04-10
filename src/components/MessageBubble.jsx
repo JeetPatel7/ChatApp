@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { format, isToday, isYesterday } from 'date-fns'
 import Avatar from './Avatar'
 
@@ -21,7 +21,7 @@ function groupReactions(reactions = []) {
   return Object.entries(map).map(([emoji, data]) => ({ emoji, ...data }))
 }
 
-export default function MessageBubble({ msg, isMine, onReply, onReact, currentUserId }) {
+const MessageBubble = React.memo(function MessageBubble({ msg, isMine, onReply, onReact, currentUserId }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [hovered, setHovered] = useState(false)
   const grouped = groupReactions(msg.reactions)
@@ -198,8 +198,9 @@ export default function MessageBubble({ msg, isMine, onReply, onReact, currentUs
       )}
     </div>
   )
-}
+})
 
+export default MessageBubble
 const actionBtnStyle = {
   background: '#202c33',
   border: '1px solid rgba(255,255,255,0.05)',

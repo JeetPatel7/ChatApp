@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase'
 import MessageBubble from './MessageBubble'
 import TypingIndicator from './TypingIndicator'
 import Avatar from './Avatar'
+import MessageInput from './MessageInput'
 
 function dateSeparator(dateStr) {
   const d = new Date(dateStr)
@@ -17,11 +18,8 @@ function dateSeparator(dateStr) {
 export default function ChatArea({ roomId, rooms }) {
   const { user } = useAuth()
   const { messages, loading, typingUsers, onlineUsers, sendMessage, handleTyping, toggleReaction } = useMessages(roomId)
-  const [input, setInput] = useState('')
   const [replyTo, setReplyTo] = useState(null)
-  const [sending, setSending] = useState(false)
   const bottomRef = useRef(null)
-  const inputRef = useRef(null)
 
   const room = rooms?.find(r => r.id === roomId)
 
@@ -30,28 +28,8 @@ export default function ChatArea({ roomId, rooms }) {
   }, [messages, typingUsers])
 
   useEffect(() => {
-    inputRef.current?.focus()
-  }, [roomId])
-
-  async function handleSend() {
-    if (!input.trim()) return
-    const textToSend = input
-    const replyId = replyTo?.id
-    
-    // Instantly clear UI for snappy feel
-    setInput('')
-    setReplyTo(null)
-    
-    // Background send without blocking UI
-    sendMessage(textToSend, replyId)
-  }
-
-  function handleKeyDown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
-    }
-  }
+    bottomRef.current?.scrollIntoView({ behavior: 'auto' })
+  }, [messages, typingUsers])
 
   // Group messages by date
   const grouped = []
@@ -154,48 +132,13 @@ export default function ChatArea({ roomId, rooms }) {
         <div ref={bottomRef} />
       </div>
 
-      {/* Reply preview */}
-      {replyTo && (
-        <div style={styles.replyBar}>
-          <div style={{ flex: 1 }}>
-            <span style={{ fontSize: '11px', color: '#378ADD', fontWeight: '600' }}>
-              Replying to {replyTo.sender?.display_name}
-            </span>
-            <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginTop: '1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '400px' }}>
-              {replyTo.content}
-            </div>
-          </div>
-          <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: '16px' }}>✕</button>
-        </div>
-      )}
-
-      {/* Input */}
-      <div style={styles.inputArea}>
-        <div style={styles.inputWrap}>
-          <textarea
-            ref={inputRef}
-            style={styles.textarea}
-            placeholder={`Message #${room?.name || '...'}`}
-            value={input}
-            rows={1}
-            onChange={e => {
-              setInput(e.target.value)
-              handleTyping()
-              // Auto-resize
-              e.target.style.height = 'auto'
-              e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'
-            }}
-            onKeyDown={handleKeyDown}
-          />
-            <button
-              style={{ ...styles.sendBtn, opacity: input.trim() ? 1 : 0.4 }}
-              onClick={handleSend}
-              disabled={!input.trim()}
-            >
-              <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" fill="#aebac1"><path d="M1.101,21.757L23.8,12.028L1.101,2.3l0.011,7.912l13.623,1.816L1.112,13.845 L1.101,21.757z"></path></svg>
-            </button>
-          </div>
-      </div>
+      <MessageInput 
+        roomName={room?.name} 
+        sendMessage={sendMessage} 
+        handleTyping={handleTyping} 
+        replyTo={replyTo} 
+        setReplyTo={setReplyTo} 
+      />
     </div>
   )
 }
@@ -232,27 +175,8 @@ const styles = {
     fontSize: '12.5px', color: '#8696a0', background: '#202c33', 
     padding: '6px 12px', borderRadius: '8px', boxShadow: '0 1px 0.5px rgba(11,20,26,.13)' 
   },
-  replyBar: {
-    display: 'flex', alignItems: 'center', gap: '12px',
-    padding: '8px 20px', background: '#202c33',
-    borderLeft: '4px solid #00a884',
-  },
-  inputArea: { 
-    padding: '10px 16px', background: '#202c33', 
-    display: 'flex', alignItems: 'center',
-  },
-  inputWrap: {
-    flex: 1, display: 'flex', alignItems: 'flex-end', gap: '10px',
-    background: '#2a3942', borderRadius: '8px', padding: '9px 12px',
-  },
-  textarea: {
-    flex: 1, background: 'transparent', border: 'none', outline: 'none',
-    color: '#d1d7db', fontSize: '15px', lineHeight: '20px', resize: 'none',
-    fontFamily: "inherit", maxHeight: '120px', overflowY: 'auto',
-  },
-  sendBtn: {
-    width: 40, height: 40, background: 'transparent',
-    border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', flexShrink: 0, transition: 'opacity 0.15s',
+  dateLabel: { 
+    fontSize: '12.5px', color: '#8696a0', background: '#202c33', 
+    padding: '6px 12px', borderRadius: '8px', boxShadow: '0 1px 0.5px rgba(11,20,26,.13)' 
   },
 }
