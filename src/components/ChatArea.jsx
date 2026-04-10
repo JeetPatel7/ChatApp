@@ -175,8 +175,4 @@ const styles = {
     fontSize: '12.5px', color: '#8696a0', background: '#202c33', 
     padding: '6px 12px', borderRadius: '8px', boxShadow: '0 1px 0.5px rgba(11,20,26,.13)' 
   },
-  dateLabel: { 
-    fontSize: '12.5px', color: '#8696a0', background: '#202c33', 
-    padding: '6px 12px', borderRadius: '8px', boxShadow: '0 1px 0.5px rgba(11,20,26,.13)' 
-  },
 }
