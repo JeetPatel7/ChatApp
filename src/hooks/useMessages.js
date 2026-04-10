@@ -14,7 +14,8 @@ export function useMessages(roomId) {
   // Fetch initial messages with sender profiles + reactions
   const fetchMessages = useCallback(async () => {
     if (!roomId) return
-    setLoading(true)
+    // Only show loading indicator if we don't have messages yet (prevents screen blank on reaction sync)
+    if (messages.length === 0) setLoading(true)
     try {
       const { data, error } = await supabase
         .from('messages')
@@ -102,9 +103,16 @@ export function useMessages(roomId) {
     // Presence (online users + typing)
     channel.on('presence', { event: 'sync' }, () => {
       const state = channel.presenceState()
-      const users = Object.values(state).flat()
-      setOnlineUsers(users)
-      const typing = users.filter(u => u.typing && u.user_id !== user.id)
+      const allSockets = Object.values(state).flat()
+      
+      // Deduplicate by user_id so 1 person with 4 tabs counts as 1 person online
+      const uniqueUsersMap = new Map()
+      allSockets.forEach(u => uniqueUsersMap.set(u.user_id, u))
+      
+      const uniqueUsers = Array.from(uniqueUsersMap.values())
+      setOnlineUsers(uniqueUsers)
+      
+      const typing = uniqueUsers.filter(u => u.typing && u.user_id !== user.id)
       setTypingUsers(typing.map(u => u.display_name))
     })
 

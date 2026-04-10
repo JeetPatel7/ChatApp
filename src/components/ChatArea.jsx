@@ -26,7 +26,7 @@ export default function ChatArea({ roomId, rooms }) {
   const room = rooms?.find(r => r.id === roomId)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    bottomRef.current?.scrollIntoView({ behavior: 'auto' })
   }, [messages, typingUsers])
 
   useEffect(() => {
