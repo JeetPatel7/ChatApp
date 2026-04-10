@@ -62,8 +62,8 @@ create table public.rooms (
 );
 
 alter table public.rooms enable row level security;
-create policy "Rooms readable by members" on public.rooms for select using (
-  exists (select 1 from public.room_members where room_id = id and user_id = auth.uid())
+create policy "Rooms readable by everyone" on public.rooms for select using (
+  is_dm = false or exists (select 1 from public.room_members where room_id = id and user_id = auth.uid())
 );
 create policy "Authenticated can create rooms" on public.rooms for insert with check (auth.uid() is not null);
 
