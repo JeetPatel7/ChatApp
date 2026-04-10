@@ -43,31 +43,25 @@ export default function Sidebar({ activeRoomId, onSelectRoom, rooms = [], roomsL
 
   return (
     <div style={styles.sidebar}>
-      {/* Header */}
+      {/* Header (WhatsApp style top bar) */}
       <div style={styles.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
-            <circle cx="18" cy="18" r="18" fill="#185FA5"/>
-            <circle cx="11" cy="16" r="3" fill="white"/>
-            <circle cx="18" cy="12" r="3" fill="white" opacity="0.8"/>
-            <circle cx="25" cy="16" r="3" fill="white" opacity="0.6"/>
-          </svg>
-          <span style={styles.logoText}>Pulse</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <Avatar name={profile?.display_name || 'User'} color={profile?.avatar_color || '#00a884'} size={40} online={false} />
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ fontSize: '15px', fontWeight: '500', color: '#e9edef' }}>{profile?.display_name || 'Loading...'}</span>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: '6px' }}>
-          <button style={styles.iconBtn} onClick={() => setShowCreate(true)} title="New room">+</button>
-          <button style={styles.iconBtn} onClick={openJoin} title="Discover rooms">🔍</button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button style={styles.iconBtn} onClick={openJoin} title="Discover rooms">
+            <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" fill="#aebac1"><path d="M12,7a2,2,0,1,0-2-2A2,2,0,0,0,12,7Zm0,10a2,2,0,1,0,2,2A2,2,0,0,0,12,17Zm0-7a2,2,0,1,0,2,2A2,2,0,0,0,12,10Z"></path></svg>
+          </button>
+          <button style={styles.iconBtn} onClick={() => setShowCreate(true)} title="New chat">
+            <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" fill="#aebac1"><path d="M19.005,3.175H4.674C3.642,3.175,3,3.789,3,4.821V21.02l3.544-3.514h12.462c1.033,0,2.064-1.06,2.064-2.093V4.821C21.068,3.789,20.037,3.175,19.005,3.175Z"></path></svg>
+          </button>
+          <button style={styles.iconBtn} onClick={signOut} title="Sign out">
+             <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" fill="#aebac1"><path d="M16 13v-2H7V8l-5 4 5 4v-3z M20 3H9c-1.1 0-2 .9-2 2v3h2V5h11v14H9v-3H7v3c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path></svg>
+          </button>
         </div>
-      </div>
-
-      {/* Profile strip */}
-      <div style={styles.profile}>
-        <Avatar name={profile?.display_name || 'User'} color={profile?.avatar_color || '#185FA5'} size={32} online />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={styles.profileName}>{profile?.display_name || 'Loading...'}</div>
-          <div style={styles.profileEmail}>{profile?.email}</div>
-        </div>
-        <button style={styles.iconBtn} onClick={signOut} title="Sign out">↩</button>
       </div>
 
       {/* Search */}
@@ -170,26 +164,29 @@ export default function Sidebar({ activeRoomId, onSelectRoom, rooms = [], roomsL
 }
 
 function RoomItem({ room, active, onClick }) {
+  // Use first 2 letters for avatar fallback
+  const char = room.name.substring(0, 2).toUpperCase()
   return (
-    <div onClick={onClick} style={{ ...styles.roomItem, background: active ? 'rgba(24,95,165,0.2)' : 'transparent' }}>
+    <div onClick={onClick} style={{ ...styles.roomItem, background: active ? '#2a3942' : 'transparent' }}>
       <div style={{
-        width: 36, height: 36, borderRadius: '10px',
-        background: active ? 'rgba(24,95,165,0.3)' : 'rgba(255,255,255,0.06)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: '15px', flexShrink: 0,
-        border: active ? '1px solid rgba(24,95,165,0.5)' : '1px solid rgba(255,255,255,0.06)',
+        width: 49, height: 49, borderRadius: '50%',
+        background: '#667781', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: '18px', color: '#fff', flexShrink: 0,
       }}>
-        #
+        {char}
       </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: '14px', fontWeight: active ? '500' : '400', color: active ? '#fff' : 'rgba(255,255,255,0.7)' }}>
-          {room.name}
-        </div>
-        {room.description && (
-          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {room.description}
+      <div style={styles.roomItemContent}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ fontSize: '17px', color: '#e9edef' }}>
+            {room.name}
           </div>
-        )}
+          <div style={{ fontSize: '12px', color: '#8696a0' }}>
+            {/* Can put timestamp here later */}
+          </div>
+        </div>
+        <div style={{ fontSize: '14px', color: '#8696a0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {room.description || 'Welcome to the room!'}
+        </div>
       </div>
     </div>
   )
@@ -232,47 +229,44 @@ const modalBtn = {
 
 const styles = {
   sidebar: {
-    width: '260px', minWidth: '260px', height: '100%',
-    background: '#0e1523', borderRight: '1px solid rgba(255,255,255,0.06)',
-    display: 'flex', flexDirection: 'column', fontFamily: "'DM Sans', sans-serif",
+    width: '30%', minWidth: '300px', maxWidth: '420px', height: '100%',
+    background: '#111b21', borderRight: '1px solid #222d34',
+    display: 'flex', flexDirection: 'column', fontFamily: "'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif",
   },
   header: {
-    padding: '16px 14px', display: 'flex', alignItems: 'center',
-    justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)',
+    padding: '10px 16px', display: 'flex', alignItems: 'center',
+    justifyContent: 'space-between', background: '#202c33',
+    minHeight: '59px',
   },
-  logoText: { fontSize: '17px', fontWeight: '600', color: '#fff', letterSpacing: '-0.3px' },
   iconBtn: {
-    width: '28px', height: '28px', border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '8px', background: 'transparent', color: 'rgba(255,255,255,0.5)',
+    padding: '8px', background: 'transparent', border: 'none',
     cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '14px', fontFamily: "'DM Sans', sans-serif",
   },
-  profile: {
-    padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '8px',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
+  searchWrap: { 
+    padding: '7px 12px', background: '#111b21',
+    borderBottom: '1px solid #222d34'
   },
-  profileName: { fontSize: '13px', fontWeight: '500', color: 'rgba(255,255,255,0.8)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  profileEmail: { fontSize: '11px', color: 'rgba(255,255,255,0.3)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  searchWrap: { padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.04)' },
   searchInput: {
-    width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: '8px', padding: '7px 12px', fontSize: '13px', color: '#fff', outline: 'none',
-    fontFamily: "'DM Sans', sans-serif", boxSizing: 'border-box',
+    width: '100%', background: '#202c33', border: 'none',
+    borderRadius: '8px', padding: '9px 12px 9px 32px', fontSize: '15px', color: '#d1d7db', outline: 'none',
+    fontFamily: "inherit", boxSizing: 'border-box',
   },
   errorBanner: {
     margin: '8px 10px', padding: '10px 12px',
-    background: 'rgba(226,75,74,0.12)', border: '1px solid rgba(226,75,74,0.3)',
-    borderRadius: '8px', color: '#F09595',
+    background: '#2a3942', borderRadius: '8px', color: '#ef697a',
   },
-  roomList: { flex: 1, overflowY: 'auto', padding: '6px 8px' },
+  roomList: { flex: 1, overflowY: 'auto', background: '#111b21' },
   roomItem: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    padding: '8px 8px', borderRadius: '10px', cursor: 'pointer',
-    transition: 'background 0.15s', marginBottom: '2px',
+    display: 'flex', alignItems: 'center', gap: '15px',
+    padding: '0 12px 0 12px', cursor: 'pointer',
   },
-  emptyMsg: { fontSize: '13px', color: 'rgba(255,255,255,0.3)', textAlign: 'center', padding: '32px 16px', lineHeight: '1.6' },
+  roomItemContent: {
+    flex: 1, minWidth: 0, padding: '12px 0', borderBottom: '1px solid #222d34',
+    display: 'flex', flexDirection: 'column', gap: '2px'
+  },
+  emptyMsg: { fontSize: '14px', color: '#8696a0', textAlign: 'center', padding: '32px 16px', lineHeight: '1.6' },
   joinRoomItem: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    padding: '12px 0', borderBottom: '1px solid rgba(255,255,255,0.06)', gap: '12px',
+    padding: '12px 0', borderBottom: '1px solid #222d34', gap: '12px',
   },
 }

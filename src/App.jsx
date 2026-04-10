@@ -22,7 +22,7 @@ class ErrorBoundary extends React.Component {
       return (
         <div style={{
           height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: '#0a0f1a', fontFamily: "'DM Sans', sans-serif",
+          background: '#111b21', fontFamily: "'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif",
         }}>
           <div style={{ textAlign: 'center', maxWidth: '420px', padding: '40px' }}>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>⚠️</div>
@@ -35,14 +35,14 @@ class ErrorBoundary extends React.Component {
             <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', lineHeight: '1.5', marginBottom: '24px' }}>
               Make sure your Supabase database is set up correctly. Check the SQL in <code style={{ color: '#378ADD' }}>src/lib/supabase.js</code> for the schema.
             </p>
-            <button
-              onClick={() => { this.setState({ hasError: false, error: null }); window.location.reload() }}
-              style={{
-                background: '#185FA5', color: '#fff', border: 'none',
-                borderRadius: '10px', padding: '11px 24px', fontSize: '14px',
-                fontWeight: '500', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif",
-              }}
-            >
+              <button
+                onClick={() => { this.setState({ hasError: false, error: null }); window.location.reload() }}
+                style={{
+                  background: '#00a884', color: '#111b21', border: 'none',
+                  borderRadius: '24px', padding: '11px 24px', fontSize: '14px',
+                  fontWeight: '600', cursor: 'pointer', fontFamily: "'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+                }}
+              >
               Reload App
             </button>
           </div>
@@ -60,7 +60,7 @@ export default function App() {
     return (
       <div style={{
         height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: '#0a0f1a', fontFamily: "'DM Sans', sans-serif",
+        background: '#111b21', fontFamily: "'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif",
       }}>
         <div style={{ textAlign: 'center' }}>
           <svg width="40" height="40" viewBox="0 0 36 36" fill="none" style={{ marginBottom: '16px' }}>

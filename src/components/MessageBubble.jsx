@@ -75,28 +75,42 @@ export default function MessageBubble({ msg, isMine, onReply, onReact, currentUs
 
         {/* Bubble */}
         <div style={{
-          background: isMine ? '#185FA5' : 'rgba(255,255,255,0.07)',
-          border: isMine ? 'none' : '1px solid rgba(255,255,255,0.08)',
-          borderRadius: isMine ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-          padding: '9px 14px',
+          background: isMine ? '#005c4b' : '#202c33',
+          border: 'none',
+          borderRadius: isMine ? '8px 0 8px 8px' : '0 8px 8px 8px',
+          padding: '6px 7px 8px 9px',
           fontSize: '14px',
-          lineHeight: '1.55',
-          color: '#fff',
+          lineHeight: '19px',
+          color: '#e9edef',
           wordBreak: 'break-word',
+          position: 'relative',
+          minWidth: '100px',
+          boxShadow: '0 1px 0.5px rgba(11,20,26,.13)',
         }}>
-          {msg.content}
+          {/* WhatsApp Tail */}
           <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            gap: '4px',
-            marginTop: '4px',
+            position: 'absolute', top: 0,
+            [isMine ? 'right' : 'left']: '-8px',
+            width: '8px', height: '13px',
+            background: isMine ? '#005c4b' : '#202c33',
+            clipPath: isMine ? 'polygon(0 0, 100% 0, 0 100%)' : 'polygon(0 0, 100% 0, 100% 100%)',
+          }}/>
+          
+          <div style={{ paddingBottom: '14px' }}>
+            {msg.content}
+          </div>
+          
+          <div style={{
+            position: 'absolute', right: '7px', bottom: '2px',
+            display: 'flex', alignItems: 'center', gap: '3px',
           }}>
-            <span style={{ fontSize: '10px', color: isMine ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.3)' }}>
+            <span style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.6)', marginTop: '2px' }}>
               {formatTime(msg.created_at)}
             </span>
             {isMine && (
-              <span style={{ fontSize: '12px', color: 'rgba(159,225,203,0.9)' }}>✓✓</span>
+              <span style={{ fontSize: '13px', color: msg.pending ? '#8696a0' : '#53bdeb' }}>
+                {msg.pending ? '🕒' : '✓✓'}
+              </span>
             )}
           </div>
         </div>
@@ -155,9 +169,9 @@ export default function MessageBubble({ msg, isMine, onReply, onReact, currentUs
                 position: 'absolute',
                 bottom: '36px',
                 [isMine ? 'right' : 'left']: '0',
-                background: '#1e2535',
-                border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: '12px',
+                background: '#233138',
+                border: '1px solid rgba(255,255,255,0.05)',
+                borderRadius: '8px',
                 padding: '8px',
                 display: 'flex',
                 gap: '6px',
@@ -187,16 +201,16 @@ export default function MessageBubble({ msg, isMine, onReply, onReact, currentUs
 }
 
 const actionBtnStyle = {
-  background: 'rgba(255,255,255,0.08)',
-  border: '1px solid rgba(255,255,255,0.1)',
+  background: '#202c33',
+  border: '1px solid rgba(255,255,255,0.05)',
   borderRadius: '8px',
-  width: '28px',
-  height: '28px',
+  width: '32px',
+  height: '32px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   cursor: 'pointer',
-  fontSize: '13px',
-  color: 'rgba(255,255,255,0.6)',
-  fontFamily: "'DM Sans', sans-serif",
+  fontSize: '15px',
+  color: '#8696a0',
+  fontFamily: "inherit",
 }

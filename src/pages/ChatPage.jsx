@@ -13,8 +13,8 @@ export default function ChatPage() {
       height: '100vh',
       width: '100vw',
       overflow: 'hidden',
-      fontFamily: "'DM Sans', sans-serif",
-      background: '#111827',
+      fontFamily: "'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+      background: '#111b21',
     }}>
       <Sidebar
         activeRoomId={activeRoomId}

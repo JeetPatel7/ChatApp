@@ -188,6 +188,7 @@ export function useMessages(roomId) {
       },
       reactions: [],
       reply_to: null, // Basic optimistic, real reply_to comes via realtime sync
+      pending: true, // Tells UI to show a clock icon
     }
     setMessages(prev => [...prev, optimisticMsg])
 
@@ -206,6 +207,9 @@ export function useMessages(roomId) {
         setMessages(prev => prev.filter(m => m.id !== tempId))
         return { error }
       }
+      // Insert successful. Realtime will replace it with the final data object,
+      // but we can immediately mark it as not pending to show ticks:
+      setMessages(prev => prev.map(m => m.id === tempId ? { ...m, pending: false } : m))
       return { error: null }
     } catch (err) {
       console.error('Send message exception:', err)

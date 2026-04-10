@@ -187,19 +187,14 @@ export default function ChatArea({ roomId, rooms }) {
             }}
             onKeyDown={handleKeyDown}
           />
-          <button
-            style={{ ...styles.sendBtn, opacity: input.trim() ? 1 : 0.4 }}
-            onClick={handleSend}
-            disabled={!input.trim() || sending}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-              <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
-            </svg>
-          </button>
-        </div>
-        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.2)', padding: '4px 4px 0', textAlign: 'right' }}>
-          Enter to send · Shift+Enter for new line
-        </div>
+            <button
+              style={{ ...styles.sendBtn, opacity: input.trim() ? 1 : 0.4 }}
+              onClick={handleSend}
+              disabled={!input.trim()}
+            >
+              <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" fill="#aebac1"><path d="M1.101,21.757L23.8,12.028L1.101,2.3l0.011,7.912l13.623,1.816L1.112,13.845 L1.101,21.757z"></path></svg>
+            </button>
+          </div>
       </div>
     </div>
   )
@@ -208,23 +203,18 @@ export default function ChatArea({ roomId, rooms }) {
 const styles = {
   area: {
     flex: 1, display: 'flex', flexDirection: 'column', height: '100%',
-    background: '#111827', fontFamily: "'DM Sans', sans-serif", minWidth: 0,
+    background: '#0b141a', fontFamily: "'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif", minWidth: 0,
+    backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10h10v10H10zM30 30h10v10H30zM50 10h10v10H50zM70 30h10v10H70zM10 50h10v10H10zM30 70h10v10H30zM50 50h10v10H50zM70 70h10v10H70zM90 10h10v10H90zM90 50h10v10H90z' fill='rgba(255,255,255,0.02)' fill-rule='evenodd'/%3E%3C/svg%3E")`,
   },
   header: {
-    padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)',
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    background: '#0f1724',
+    padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    background: '#202c33', borderBottom: '1px solid rgba(255,255,255,0.02)',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.1)', zIndex: 10, minHeight: '59px',
   },
-  roomIcon: {
-    width: 36, height: 36, borderRadius: '10px',
-    background: 'rgba(24,95,165,0.2)', border: '1px solid rgba(24,95,165,0.3)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '16px', color: '#378ADD', fontWeight: '600',
-  },
-  roomName: { fontSize: '15px', fontWeight: '600', color: '#fff' },
-  roomMeta: { fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginTop: '1px' },
+  roomName: { fontSize: '16px', fontWeight: '500', color: '#e9edef' },
+  roomMeta: { fontSize: '13px', color: '#8696a0', marginTop: '1px' },
   messages: {
-    flex: 1, overflowY: 'auto', padding: '16px 20px',
+    flex: 1, overflowY: 'auto', padding: '20px 5%',
     display: 'flex', flexDirection: 'column', gap: '2px',
   },
   centerMsg: {
@@ -234,31 +224,34 @@ const styles = {
     padding: '40px',
   },
   dateSep: {
-    display: 'flex', alignItems: 'center', gap: '12px',
-    margin: '16px 0 8px',
+    display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'center',
+    margin: '12px 0',
   },
-  dateLine: { flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' },
-  dateLabel: { fontSize: '11px', color: 'rgba(255,255,255,0.3)', whiteSpace: 'nowrap', fontWeight: '500' },
+  dateLine: { display: 'none' },
+  dateLabel: { 
+    fontSize: '12.5px', color: '#8696a0', background: '#202c33', 
+    padding: '6px 12px', borderRadius: '8px', boxShadow: '0 1px 0.5px rgba(11,20,26,.13)' 
+  },
   replyBar: {
     display: 'flex', alignItems: 'center', gap: '12px',
-    padding: '8px 20px', background: 'rgba(24,95,165,0.1)',
-    borderTop: '1px solid rgba(24,95,165,0.2)',
-    borderLeft: '3px solid #185FA5',
+    padding: '8px 20px', background: '#202c33',
+    borderLeft: '4px solid #00a884',
   },
-  inputArea: { padding: '10px 16px 12px', borderTop: '1px solid rgba(255,255,255,0.06)' },
+  inputArea: { 
+    padding: '10px 16px', background: '#202c33', 
+    display: 'flex', alignItems: 'center',
+  },
   inputWrap: {
-    display: 'flex', alignItems: 'flex-end', gap: '10px',
-    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '14px', padding: '8px 8px 8px 16px',
+    flex: 1, display: 'flex', alignItems: 'flex-end', gap: '10px',
+    background: '#2a3942', borderRadius: '8px', padding: '9px 12px',
   },
   textarea: {
     flex: 1, background: 'transparent', border: 'none', outline: 'none',
-    color: '#fff', fontSize: '14px', lineHeight: '1.5', resize: 'none',
-    fontFamily: "'DM Sans', sans-serif", maxHeight: '120px', overflowY: 'auto',
-    paddingTop: '2px',
+    color: '#d1d7db', fontSize: '15px', lineHeight: '20px', resize: 'none',
+    fontFamily: "inherit", maxHeight: '120px', overflowY: 'auto',
   },
   sendBtn: {
-    width: 36, height: 36, borderRadius: '10px', background: '#185FA5',
+    width: 40, height: 40, background: 'transparent',
     border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', flexShrink: 0, transition: 'opacity 0.15s',
   },
